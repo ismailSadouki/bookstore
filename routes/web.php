@@ -56,3 +56,5 @@ Route::post('/removeAll/{book}','App\Http\Controllers\CartController@removeAll')
 
 
 Route::get('/order','App\Http\Controllers\PurchaseController@viewOrder')->name('order.index');
+Route::post('/order/accept/{id}','App\Http\Controllers\PurchaseController@acceptOrder')->name('order.accept');
+Route::post('/order/cancel/{id}','App\Http\Controllers\PurchaseController@cancelOrder')->name('order.cancel');

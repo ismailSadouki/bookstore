@@ -17,6 +17,7 @@
                         <th>الكمية</th>
                         <th> السعر الكلي</th>
                         <th>الحالة</th>
+                        <th>خيارات</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -26,11 +27,40 @@
                             <td>{{$row->number_of_copies}}</td>
                             <td>{{$row->price*$row->number_of_copies}}$</td>
                             <td>
-                                @if ($row->bought = 1)
-                                <span class="badge badge-warning">قيد المعالجة</span>
+                                {{-- @if ($row->bought == 1)
+                                @elseif  
+                                @else 
+                                @endif --}}
+
+                                @switch($row->bought)
+                                    @case(3)
+                                  <span class="badge badge-danger">تم الالغاء</span>
+                                        
+                                        @break
+                                    @case(2)
+                                  <span class="badge badge-success">تمت المراجعة</span>
+                                        
+                                        @break
+                                    @default
+                                  <span class="badge badge-warning">قيد المراجعة</span>
+                                        
+                                @endswitch
+                            </td>
+                            <td>
+                                @if($row->bought != 1)
+                                <div class="btn btn-success btn-sm mb-2 disabled" style="margin-left: 0px;border-left-width: 7px;" >موافقة</div>
+                                <div class="btn btn-danger btn-sm mb-2 disabled" style="margin-left: 0px;border-left-width: 7px;" >الغاء</div>
+                                @else
+                                <form action="{{route('order.accept',$row->id)}}" method="POST" class="d-inline-block" >
+                                    @csrf
+                                    <button class="btn btn-success btn-sm mb-2 " style="margin-left: 0px;border-left-width: 7px;" >موافقة</button>
+                                </form>
+                                <form action="{{route('order.cancel',$row->id)}}" method="POST" class="d-inline-block" >
+                                    @csrf
+                                    <button class="btn btn-danger btn-sm mb-2 " style="margin-left: 0px;border-left-width: 7px;" >الغاء</button>
+                                </form>
                                 @endif
                             </td>
-                          
                         </tr>
                     @endforeach
                 </tbody>

@@ -103,20 +103,7 @@ class PurchaseController extends Controller
         $execution = new PaymentExecution();
         $execution->setPayerId($request->payerID);
         
-        // $transaction = new Transaction();
-        // $amount = new Amount();
-        // $details = new Details();
-    
-        // $details->setShipping(2.2)
-        //     ->setTax(1.3)
-        //     ->setSubtotal(17.50);
-    
-        // $amount->setCurrency('USD');
-        // $amount->setTotal(21);
-        // $amount->setDetails($details);
-        // $transaction->setAmount($amount);
-
-        // $execution->addTransaction($transaction);
+        
         try {
             $result = $payment->execute($execution, $apiContext);  
             $user = User::find($request->userId);
@@ -138,9 +125,30 @@ class PurchaseController extends Controller
         $order = DB::table('book_user')
                         ->join('users','book_user.user_id','users.id')
                         ->join('books','book_user.book_id','books.id')
-                        ->select('book_user.*','users.name','books.price')        
+                        ->select('book_user.*','users.name','books.price')    
+                        ->where('bought' ,'!=', 0 )
                         ->get();
         // dd($order);
         return view('admin.order.index',compact('order'));
+    }
+
+    public function acceptOrder($id)
+    {
+        DB::table('book_user')->where('id',$id)->update(['bought' => 2]);
+        $notification=array(
+            'messege'=>'تم الموافقة على الطلبية',
+            'alert-type'=>'success'
+            );
+        return Redirect()->back()->with($notification);	
+
+    }
+    public function cancelOrder($id)
+    {
+        DB::table('book_user')->where('id',$id)->update(['bought' => 3]);
+        $notification=array(
+            'messege'=>'تم الغاء الطلبية',
+            'alert-type'=>'success'
+            );
+        return Redirect()->back()->with($notification);	
     }
 }
